@@ -16,40 +16,58 @@ export const signup = (req, res) => {
         req.body.password = hashedPassword
     ];
 
-    db.query(userQuery__table)
-    db.query(userQuery__checkUser, (err, allUsers) => {
-        const findEmail = allUsers.find(e => e.email.includes(email));
+    try {
+        db.query(userQuery__table)
+        db.query(userQuery__checkUser, (err, allUsers) => {
+            const findEmail = allUsers.find(e => e.email.includes(email));
 
-        if (!findEmail) {
-            db.query(userQuery__credantials, [values])
-        } else {
-            res.json({ message: "User already exist" });
-        };
+            if (!findEmail) {
+                db.query(userQuery__credantials, [values])
+            } else {
+                res.status(400).json({ message: "User already exist" });
+            };
 
-        if (allUsers.length > 0) return
-        db.query(userQuery__getUserID, email, (err, selectedUser) => {
-            if (selectedUser.length > 0) {
-                GenerateToken(selectedUser[0].id, res)
-                res.json({ user: selectedUser[0] })
-            }
+            if (allUsers.length > 0) return
+            db.query(userQuery__getUserID, email, (err, selectedUser) => {
+                if (selectedUser.length > 0) {
+                    GenerateToken(selectedUser[0].id, res)
+                    res.status(201).json({ user: selectedUser[0] })
+                }
+            });
         });
-    });
+    } catch (error) {
+        res.status(500).json("Error in signup controller", error.message);
+    }
+
 };
 
 export const loggin = (req, res) => {
     const { email, password } = req.body;
 
-    db.query(userQuery__getUserID, email, (err, user) => {
-        const isPasswordCorrect = bcrypt.compareSync(password, user[0].password);
-        if (isPasswordCorrect) {
-            GenerateToken(user[0].id, res);
-            res.json({ user: user[0] });
-        } else {
-            return res.status(400).json("Invalid credentials")
-        };
-    });
+    try {
+        db.query(userQuery__getUserID, email, (err, user) => {
+            if (user.length > 0) {
+                const isPasswordCorrect = bcrypt.compareSync(password, user[0].password);
+                if (isPasswordCorrect) {
+                    GenerateToken(user[0].id, res);
+                    res.status(200).json({ user: user[0] });
+                } else {
+                    return res.status(400).json("Invalid credentials")
+                };
+            } else {
+                return res.status(400).json("Invalid credentials")
+            };
+        });
+    } catch (error) {
+        res.status(500).json("Error in loggin controller", error.message);
+    };
 };
 
 export const loggout = (req, res) => {
-    res.json({ text: "Logging out..." })
-}; 
+    try {
+        res.cookie("token", "", { maxAge: 0 })
+        res.status(200).json("You have successfully logged out")
+    } catch (error) {
+        res.status(500).json("Error in loggin controller", error.message);
+    };
+};

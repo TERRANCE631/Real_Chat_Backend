@@ -1,9 +1,8 @@
 ##
-post http://localhost:5001/auth/signup
+post http://localhost:5001/auth/loggin
 content-type: application/json
 
 {
-    "username": "terrance",
     "email": "terrance@example.com",
     "password": "siyabonga@1"
 }
