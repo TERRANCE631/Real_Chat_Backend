@@ -6,4 +6,6 @@ export const userQuery__checkUser = "SELECT * FROM users";
 
 export const userQuery__createDb = "CREATE DATABASE IF NOT EXISTS chatApp";
 
+export const userQuery__getUserID = "SELECT * FROM users WHERE email = ?";
+
 

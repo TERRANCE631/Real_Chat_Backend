@@ -1,5 +1,6 @@
 import { db } from "../Lib/db.js";
-import { userQuery__credantials, userQuery__table, userQuery__checkUser } from "../Models/user.model.js";
+import { GenerateToken } from "../Lib/utils.js";
+import { userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID } from "../Models/user.model.js";
 
 export const signup = (req, res) => {
     const { username, email, password } = req.body;
@@ -11,6 +12,12 @@ export const signup = (req, res) => {
 
         if (!findEmail) {
             db.query(userQuery__credantials, [values])
+
+            db.query(userQuery__getUserID, email, () => {
+                if (data.length > 0) {
+                    res.json({ testing: data[0].id })
+                }
+            })
         } else {
             res.json({ message: "User already exist" })
         }

@@ -3,8 +3,8 @@ post http://localhost:5001/auth/signup
 content-type: application/json
 
 {
-    "username": "siyabonga",
-    "email": "siyabga@example.com",
+    "username": "terrance",
+    "email": "terrance@example.com",
     "password": "siyabonga@1"
 }
 
