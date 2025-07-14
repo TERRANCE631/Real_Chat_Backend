@@ -1,10 +1,12 @@
 import e from "express";
-import { loggin, loggout, signup } from "../Controllers/auth.controller.js";
+import { checkauth, loggin, loggout, signup } from "../Controllers/auth.controller.js";
+import { protectRoute } from "../Middlewares/auth.middleware.js";
 
-const router = e.Router();
+const authRouter = e.Router();
 
-router.post("/signup", signup)
-router.post("/loggin", loggin)
-router.get("/loggout", loggout)
+authRouter.post("/signup", signup)
+authRouter.post("/loggin", loggin)
+authRouter.post("/loggout", loggout)
+authRouter.get("/checkauth", protectRoute, checkauth)
 
-export default router;
+export default authRouter;

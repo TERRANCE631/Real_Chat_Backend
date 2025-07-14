@@ -2,7 +2,7 @@ import { db } from "../Lib/db.js";
 import { GenerateToken } from "../Lib/utils.js";
 import bcrypt from "bcryptjs";
 
-import { userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID } from "../Models/user.model.js";
+import { userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID, userQuery__getUserByID } from "../Models/user.model.js";
 
 export const signup = (req, res) => {
     const { username, email, password } = req.body;
@@ -23,22 +23,20 @@ export const signup = (req, res) => {
 
             if (!findEmail) {
                 db.query(userQuery__credantials, [values])
-            } else {
-                res.status(400).json({ message: "User already exist" });
-            };
+            }
 
-            if (allUsers.length > 0) return
-            db.query(userQuery__getUserID, email, (err, selectedUser) => {
-                if (selectedUser.length > 0) {
-                    GenerateToken(selectedUser[0].id, res)
-                    res.status(201).json({ user: selectedUser[0] })
-                }
-            });
+            if (allUsers.length > 0) {
+                db.query(userQuery__getUserID, email, (err, selectedUser) => {
+                    if (selectedUser.length > 0) {
+                        GenerateToken(selectedUser[0].id, res)
+                        res.status(201).json({ user: selectedUser[0], success: "You have successfully signed up" })
+                    }
+                });
+            }
         });
     } catch (error) {
         res.status(500).json("Error in signup controller", error.message);
-    }
-
+    };
 };
 
 export const loggin = (req, res) => {
@@ -58,6 +56,7 @@ export const loggin = (req, res) => {
                 return res.status(400).json("Invalid credentials")
             };
         });
+
     } catch (error) {
         res.status(500).json("Error in loggin controller", error.message);
     };
@@ -68,6 +67,17 @@ export const loggout = (req, res) => {
         res.cookie("token", "", { maxAge: 0 })
         res.status(200).json("You have successfully logged out")
     } catch (error) {
-        res.status(500).json("Error in loggin controller", error.message);
+        res.status(500).json("Error in loggout controller", error.message);
     };
 };
+
+export const checkauth = (req, res) => {
+    try {
+        db.query(userQuery__getUserByID, [req.user], (err, authorizedUser) => {
+            res.status(202).json({ user: authorizedUser[0] })
+        });
+    } catch (error) {
+        res.status(500).json("Error in checkauth controller", error.message);
+    };
+};
+

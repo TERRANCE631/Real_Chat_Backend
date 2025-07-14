@@ -1,12 +1,18 @@
+# ##
+# get http://localhost:5001/auth/checkauth
+# content-type: application/json
+
+# {
+#     "email": "terrance@example.com",
+#     "password": "siyabonga@1"
+# }
+
 ##
-post http://localhost:5001/auth/loggin
+get http://localhost:5001/messages/users
 content-type: application/json
 
-{
-    "email": "terrance@example.com",
-    "password": "siyabonga@1"
-}
-
-##
-# get http://localhost:5001/auth/loggin
-# content-type: application/json
+# {
+#     "username": "Boris",
+#     "email": "Boris@example.com",
+#     "password": "Terrance@1"
+# }   
