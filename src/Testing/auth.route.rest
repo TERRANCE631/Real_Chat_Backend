@@ -1,5 +1,5 @@
 # ##
-# get http://localhost:5001/auth/checkauth
+# post http://localhost:5001/auth/loggin
 # content-type: application/json
 
 # {
@@ -8,11 +8,9 @@
 # }
 
 ##
-get http://localhost:5001/messages/users
+get http://localhost:5001/messages/4
 content-type: application/json
 
 # {
-#     "username": "Boris",
-#     "email": "Boris@example.com",
-#     "password": "Terrance@1"
-# }   
+#     "message": "hey siyabonga!"
+# }
