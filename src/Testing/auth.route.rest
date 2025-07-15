@@ -8,9 +8,9 @@
 # }
 
 ##
-get http://localhost:5001/messages/4
+post http://localhost:5001/messages/send/7
 content-type: application/json
 
-# {
-#     "message": "hey siyabonga!"
-# }
+{
+    "message": "hey terrance!"
+}

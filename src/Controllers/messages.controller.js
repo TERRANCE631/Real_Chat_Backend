@@ -54,7 +54,7 @@ export const sendMessages = (req, res) => {
         db.query(messageQuery__sendMessage, [values], (err, messages) => {
             if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err)
 
-            res.status(200).json({ message: "Message sent" });
+            res.status(201).json({ message: "Message sent" });
         });
 
     } catch (error) {
