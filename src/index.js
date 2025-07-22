@@ -5,10 +5,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRouter from "./Routes/auth.router.js";
 import messagesRouter from "./Routes/messages.router.js";
+import { app, io, server } from "./Lib/socket.js";
 
 dotenv.config();
 const PORT = process.env.PORT
-const app = express();
 
 // opening middleware section
 app.use(cors({
@@ -25,7 +25,7 @@ app.use("/messages", messagesRouter);
 // connecting database and running server after database is connected
 connectdb()
     .then(() =>
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT} 👍👍`)
         })
     ).catch((error) => console.log(`db is not connected! 👎👎, ${error}`))

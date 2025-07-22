@@ -1,5 +1,5 @@
 import { db } from "../Lib/db.js";
-import { getBothUsersMessages, messageQuery__createTable, messageQuery__getUsers, messageQuery__sendMessage } from "../Models/messages.model.js";
+import { getBothUsersMessages, messageQuery__createTable, messageQuery__getAllMessages, messageQuery__getUsers, messageQuery__sendMessage } from "../Models/messages.model.js";
 
 export const getUsers = (req, res) => {
     try {
@@ -10,7 +10,7 @@ export const getUsers = (req, res) => {
 
             const userlist = users.filter((user) => user.id !== currentUser);
 
-            res.status(302).json({ user_list: userlist });
+            res.json(userlist);
         });
 
     } catch (error) {
@@ -28,7 +28,7 @@ export const getMessages = (req, res) => {
         db.query(getBothUsersMessages(sender_ID, receiver_ID), (err, messages) => {
             if (err) return res.status(404).json("Error occured in 👉getMessages controller Queries" + " | " + err);
 
-            res.status(302).json({ messages: messages[0] })
+            res.json(messages)
         });
 
     } catch (error) {
@@ -47,14 +47,20 @@ export const sendMessages = (req, res) => {
         const values = [
             sender_ID,
             receiver_ID,
-            message
+            message,
+            req.body.id = Math.floor(Math.random() * 1)
         ];
 
         db.query(messageQuery__createTable);
-        db.query(messageQuery__sendMessage, [values], (err, messages) => {
-            if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err)
+        db.query(messageQuery__sendMessage, [values], (err, sendMessage) => {
+            if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
 
-            res.status(201).json({ message: "Message sent" });
+            db.query(messageQuery__getAllMessages, (err, message) => {
+                if (err) return res.status(400).json("Error occured in 👉sendMessage controller on SentMessage Query" + " | " + err);
+
+                const findSentMessage = message.find((text) => text.id === sendMessage.insertId)
+                res.status(201).json(findSentMessage);
+            })
         });
 
     } catch (error) {

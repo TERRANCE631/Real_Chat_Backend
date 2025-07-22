@@ -1,16 +1,17 @@
-# ##
-# post http://localhost:5001/auth/loggin
-# content-type: application/json
-
-# {
-#     "email": "terrance@example.com",
-#     "password": "siyabonga@1"
-# }
-
 ##
-post http://localhost:5001/messages/send/7
+post http://localhost:5001/messages/send/2
 content-type: application/json
 
 {
-    "message": "hey terrance!"
+    "message": "Hey there..."
 }
+
+##
+# post http://localhost:5001/auth/signup
+# content-type: application/json
+
+# {
+#     "username": "mjongs",
+#     "email": "mjongs@example.com",
+#     "password": "Terrance@1"
+# }

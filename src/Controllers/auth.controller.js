@@ -2,7 +2,7 @@ import { db } from "../Lib/db.js";
 import { GenerateToken } from "../Lib/utils.js";
 import bcrypt from "bcryptjs";
 
-import { userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID, userQuery__getUserByID } from "../Models/user.model.js";
+import { userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID, userQuery__getUserByID, userQuery__editUsername } from "../Models/user.model.js";
 
 export const signup = (req, res) => {
     const { username, email, password } = req.body;
@@ -13,7 +13,7 @@ export const signup = (req, res) => {
     const values = [
         username,
         email,
-        req.body.password = hashedPassword
+        req.body.password = hashedPassword,
     ];
 
     try {
@@ -24,18 +24,17 @@ export const signup = (req, res) => {
             const findEmail = allUsers.find(e => e.email.includes(email));
 
             if (!findEmail) {
-                db.query(userQuery__credantials, [values])
-            }
-
-            if (allUsers.length > 0) {
+                db.query(userQuery__credantials, [values]);
                 db.query(userQuery__getUserID, email, (err, selectedUser) => {
                     if (selectedUser.length > 0) {
                         GenerateToken(selectedUser[0].id, res);
 
-                        res.status(201).json({ user: selectedUser[0], message: "You have successfully signed up" })
+                        res.status(201).json({ user: selectedUser[0] })
                     }
                 });
-            }
+            } else {
+                res.json({ message: "User already exists" })
+            };
         });
 
     } catch (error) {
@@ -56,13 +55,11 @@ export const loggin = (req, res) => {
                 if (isPasswordCorrect) {
                     GenerateToken(user[0].id, res);
                     res.status(201).json({ user: user[0] });
-
-                    res.status(201).json({ message: "You have successfully signed up" });
                 } else {
-                    return res.status(400).json({ message: "Invalid credentials" })
+                    return res.json({ message: "Invalid credentials" })
                 };
             } else {
-                return res.status(404).json({ message: "Invalid credentials" })
+                return res.json({ message: "Invalid credentials" })
             };
         });
 
@@ -87,12 +84,29 @@ export const checkauth = (req, res) => {
         db.query(userQuery__getUserByID, [req.user], (err, authorizedUser) => {
             if (err) return res.status(404).json("Error occured in 👉checkauth controller Queries" + " | Error " + err);
 
-            res.status(202).json({ user: authorizedUser[0] })
+            res.status(202).json(authorizedUser[0])
         });
 
     } catch (error) {
         res.status(500).json("Error in 👉checkauth controller" + " | Error " + error.message);
         console.log("Error in 👉checkauth controller" + " | Error " + error.message);
     };
+};
+
+export const changeUsername = (req, res) => {
+    try {
+        const { username } = req.body;
+        const id = req.user;
+        console.log(req.user);
+
+        db.query(userQuery__editUsername, [username, id], (err, user) => {
+            if (err) return res.status(404).json("Error occured in 👉changeUsername controller Queries" + " | Error " + err);
+            res.status(202).json({ user: "Updated successfully" })
+        });
+
+    } catch (error) {
+        res.status(500).json("Error in 👉changeUsername controller" + " | Error " + error.message);
+        console.log("Error in 👉changeUsername controller" + " | Error " + error.message);
+    }
 };
 
