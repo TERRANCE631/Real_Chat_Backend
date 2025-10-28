@@ -61,7 +61,7 @@ export const signup = (req, res) => {
 
 export const loggin = (req, res) => {
     const { email, password } = req.body;
-
+    
     try {
         db.query(userQuery__getUserID, email, (err, user) => {
             if (err) return res.status(404).json("Error occured in 👉loggin controller Queries" + " | Error " + err);

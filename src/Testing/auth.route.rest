@@ -5,13 +5,23 @@ content-type: application/json
 {
     "message": "Hey there..."
 }
+###
+get http://localhost:5001/messages/2
+content-type: application/json
 
-##
-# post http://localhost:5001/auth/signup
-# content-type: application/json
+###
+get http://localhost:5001/auth/checkauth
+content-type: application/json
 
-# {
-#     "username": "mjongs",
-#     "email": "mjongs@example.com",
-#     "password": "Terrance@1"
-# }
+###
+post http://localhost:5001/auth/loggin
+content-type: application/json
+
+{
+    "email": "Terrance@example.com",
+    "password": "Terrance@1"
+}
+
+###
+post http://localhost:5001/auth/loggout
+content-type: application/json

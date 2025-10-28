@@ -42,43 +42,37 @@ export const getMessages = (req, res) => {
 export const sendMessages = (req, res) => {
     try {
         const { message } = req.body;
-        const sender_ID = req.user;           // authenticated user
-        const receiver_ID = String(req.params.id); // normalize to string
+        const sender_ID = req.user;
+        const { id: receiver_ID } = req.params;
 
-        if (!message || !receiver_ID) {
-            return res.status(400).json("Message or receiver ID missing");
-        }
+        const values = [
+            sender_ID,
+            receiver_ID,
+            message,
+            req.body.id = Math.floor(Math.random() * 1)
+        ];
 
-        const values = [sender_ID, receiver_ID, message];
+        db.query(messageQuery__createTable);
+        db.query(messageQuery__sendMessage, [values], (err, sendMessage) => {
+            if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
 
-        // Insert message into DB
-        db.query(messageQuery__sendMessage, values, (err, result) => {
-            if (err) return res.status(400).json("Error sending message | " + err);
+            db.query(messageQuery__getAllMessages, (err, message) => {
+                if (err) return res.status(400).json("Error occured in 👉sendMessage controller on SentMessage Query" + " | " + err);
 
-            // Fetch the newly inserted message by insertId
-            db.query(
-                "SELECT * FROM messages WHERE id = ?",
-                [result.insertId],
-                (err, rows) => {
-                    if (err) return res.status(400).json("Error fetching message | " + err);
+                const findSentMessage = message.find((text) => text.id === sendMessage.insertId)
+                const receiverSocketID = getReceiverSocketID(receiver_ID);
 
-                    const sentMessage = rows[0];
+                if (receiverSocketID) {
+                    io.to(receiverSocketID).emit("newMessage", findSentMessage)
+                };
 
-                    // Emit via Socket.IO if receiver is online
-                    const receiverSocketID = getReceiverSocketID(receiver_ID);
-                    if (receiverSocketID) {
-                        io.to(receiverSocketID).emit("newMessage", sentMessage);
-                    }
-
-                    // Respond to sender
-                    res.status(201).json(sentMessage);
-                }
-            );
+                res.status(201).json(findSentMessage);
+            })
         });
-    } catch (error) {
-        console.log("Error in sendMessages | " + error.message);
-        res.status(500).json("Error in sendMessages | " + error.message);
-    }
-};
 
+    } catch (error) {
+        console.log("Error in 👉sendMessages controller" + " | Error: " + error.message);
+        res.status(500).json("Error in 👉sendMessages controller" + " | Error: " + error.message)
+    };
+};
 
