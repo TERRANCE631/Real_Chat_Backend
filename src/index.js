@@ -12,8 +12,9 @@ const PORT = process.env.PORT
 
 // opening middleware section
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
+    origin: [process.env.DEV_API_URL, process.env.PROD_API_URL],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 
 app.use(cookieParser());
