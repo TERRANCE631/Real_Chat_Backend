@@ -2,8 +2,9 @@ import { db } from "../Lib/db.js";
 import { GenerateToken } from "../Lib/utils.js";
 import bcrypt from "bcryptjs";
 
-import { 
-    userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID, userQuery__getUserByID, userQuery__editUsername } from "../Models/user.model.js";
+import {
+    userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID, userQuery__getUserByID, userQuery__editUsername
+} from "../Models/user.model.js";
 
 export const signup = (req, res) => {
     const { username, email, password } = req.body;
@@ -86,7 +87,12 @@ export const loggin = (req, res) => {
 
 export const loggout = (req, res) => {
     try {
-        res.cookie("token", "", { maxAge: 0 })
+        res.cookie("token", "", {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            expires: new Date(0), // set to expire immediately
+        });
         res.status(200).json({ message: "You have successfully logged out" });
 
     } catch (error) {
