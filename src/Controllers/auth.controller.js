@@ -2,10 +2,22 @@ import { db } from "../Lib/db.js";
 import { GenerateToken } from "../Lib/utils.js";
 import bcrypt from "bcryptjs";
 
-import { userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID, userQuery__getUserByID, userQuery__editUsername } from "../Models/user.model.js";
+import { 
+    userQuery__credantials, userQuery__table, userQuery__checkUser, userQuery__getUserID, userQuery__getUserByID, userQuery__editUsername } from "../Models/user.model.js";
 
 export const signup = (req, res) => {
     const { username, email, password } = req.body;
+
+    const hex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+    let hexColor = "#";
+
+    function randomColorUtility(length) {
+        return Math.floor(Math.random() * length);
+    };
+
+    for (let i = 0; i < 6; i++) {
+        hexColor += hex[randomColorUtility(hex.length)]
+    }
 
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(password, salt);
@@ -14,6 +26,7 @@ export const signup = (req, res) => {
         username,
         email,
         req.body.password = hashedPassword,
+        req.body.userIdColor = hexColor
     ];
 
     try {
@@ -26,7 +39,9 @@ export const signup = (req, res) => {
             if (!findEmail) {
                 db.query(userQuery__credantials, [values]);
                 db.query(userQuery__getUserID, email, (err, selectedUser) => {
-                    if (selectedUser.length > 0) {
+                    if (err) return res.status(404).json("Error occured in 👉signup controller Queries" + " | Error " + err);
+
+                    if (selectedUser.length !== 0) {
                         GenerateToken(selectedUser[0].id, res);
 
                         res.status(201).json({ user: selectedUser[0] })

@@ -1,6 +1,6 @@
-export const userQuery__table = `CREATE TABLE IF NOT EXISTS users ( username VARCHAR(200), email VARCHAR(200), password VARCHAR(200), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, id INT PRIMARY KEY AUTO_INCREMENT )`;
+export const userQuery__table = `CREATE TABLE IF NOT EXISTS users ( username VARCHAR(200), email VARCHAR(200), password VARCHAR(200), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, userIdColor VARCHAR(200), id INT PRIMARY KEY AUTO_INCREMENT )`;
 
-export const userQuery__credantials = "INSERT INTO users (`username`, `email`, `password`) VALUES (?)";
+export const userQuery__credantials = "INSERT INTO users (`username`, `email`, `password`, `userIdColor`) VALUES (?)";
 
 export const userQuery__checkUser = "SELECT * FROM users";
 
