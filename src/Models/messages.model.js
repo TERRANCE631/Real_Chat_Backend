@@ -1,4 +1,4 @@
-export const messageQuery__createTable = "CREATE TABLE IF NOT EXISTS messages ( sender_ID INT, receiver_ID INT, message VARCHAR(21845), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, id INT PRIMARY KEY AUTO_INCREMENT )";
+export const messageQuery__createTable = "CREATE TABLE IF NOT EXISTS messages ( sender_ID INT, receiver_ID INT, message TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, id INT PRIMARY KEY AUTO_INCREMENT )";
 
 export const messageQuery__sendMessage = "INSERT INTO messages ( `sender_ID`, `receiver_ID`, `message`, `id` ) VALUES (?)";
 
