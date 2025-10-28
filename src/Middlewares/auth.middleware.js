@@ -13,7 +13,7 @@ export const protectRoute = (req, res, next) => {
         if (!decoded) {
             return res.status(401).json("Unauthorized - Invalid token")
         };
-
+        
         req.user = decoded.userID;
         next();
 
