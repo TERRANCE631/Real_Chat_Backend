@@ -6,27 +6,17 @@ import cors from "cors";
 import authRouter from "./Routes/auth.router.js";
 import messagesRouter from "./Routes/messages.router.js";
 import { app, server } from "./Lib/socket.js";
-import path from "path";
 
 dotenv.config();
 const PORT = process.env.PORT
 
 // opening middleware section
 app.use(cors({
-    origin: process.env.DEV_API_URL,
+    origin: [process.env.DEV_API_URL, process.env.PROD_API_URL],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"]
 }));
-
-// const __dirname = path.resolve();
-
-// if (process.env.NODE_ENV === "production") {
-//     app.use(express.static(path.join(__dirname, "../Frontend/dist")));
-//     app.get("*", (req, res) => {
-//         res.sendFile(path.resolve(__dirname, "../Frontend", "dist", "index.html"));
-//     });
-// }
-
+ 
 app.use(cookieParser());
 app.use(express.json());
 
