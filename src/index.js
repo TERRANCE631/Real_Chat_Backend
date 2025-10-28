@@ -5,14 +5,14 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRouter from "./Routes/auth.router.js";
 import messagesRouter from "./Routes/messages.router.js";
-import { app, io, server } from "./Lib/socket.js";
+import { app, server } from "./Lib/socket.js";
 
 dotenv.config();
 const PORT = process.env.PORT
 
 // opening middleware section
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: [process.env.DEV_API_URL, process.env.PROD_API_URL],
     credentials: true
 }));
 app.use(cookieParser());
