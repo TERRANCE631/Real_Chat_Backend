@@ -25,7 +25,8 @@ export const getMessages = (req, res) => {
     try {
         const sender_ID = req.user;
         const { id: receiver_ID } = req.params;
-
+        
+        db.query(messageQuery__createTable);
         db.query(getBothUsersMessages(sender_ID, receiver_ID), (err, messages) => {
             if (err) return res.status(404).json("Error occured in 👉getMessages controller Queries" + " | " + err);
 
@@ -52,7 +53,7 @@ export const sendMessages = (req, res) => {
             req.body.id = Math.floor(Math.random() * 1)
         ];
         console.log("sender_ID:", sender_ID, "receiver_ID:", receiver_ID, "message:", message);
-        
+
         db.query(messageQuery__createTable);
         db.query(messageQuery__sendMessage, [values], (err, sendMessage) => {
             if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
