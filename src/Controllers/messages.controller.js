@@ -51,7 +51,8 @@ export const sendMessages = (req, res) => {
             message,
             req.body.id = Math.floor(Math.random() * 1)
         ];
-
+        console.log("sender_ID:", sender_ID, "receiver_ID:", receiver_ID, "message:", message);
+        
         db.query(messageQuery__createTable);
         db.query(messageQuery__sendMessage, [values], (err, sendMessage) => {
             if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
