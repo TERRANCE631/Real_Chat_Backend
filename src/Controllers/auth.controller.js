@@ -90,7 +90,7 @@ export const loggout = (req, res) => {
         res.cookie("token", "", {
             httpOnly: true,
             sameSite: "none",
-            secure: process.env.NODE_ENV !== "development",
+            secure: true,
             expires: new Date(0), // set to expire immediately
         });
         res.status(200).json({ message: "You have successfully logged out" });
