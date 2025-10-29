@@ -9,7 +9,7 @@ export const GenerateToken = (userID, res) => {
     // Sign token
     const token = jwt.sign({ userID }, secret, { expiresIn: "7d" });
 
-    // production cookie if needed in future like cross site
+    // production cookie for cross site
     res.cookie("token", token, {
         httpOnly: true,
         sameSite: "none", // must be none on production 
