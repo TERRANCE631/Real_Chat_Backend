@@ -49,26 +49,29 @@ export const sendMessages = (req, res) => {
         const values = [
             sender_ID,
             receiver_ID,
-            message
+            message,
+            req.body.id = Math.floor(Math.random() * 1)
         ];
+
         console.log("sender_ID:", sender_ID, "receiver_ID:", receiver_ID, "message:", message);
 
         db.query(messageQuery__createTable);
         db.query(messageQuery__sendMessage, [values], (err, sendMessage) => {
-            if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
+            if (err) return res.status(500).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
 
             db.query(messageQuery__getAllMessages, (err, message) => {
-                if (err) return res.status(400).json("Error occured in 👉sendMessage controller on SentMessage Query" + " | " + err);
+                if (err) return res.status(500).json("Error occured in 👉sendMessage controller on SentMessage Query" + " | " + err);
 
                 const findSentMessage = message.find((text) => text.id === sendMessage.insertId)
-                const receiverSocketID = getReceiverSocketID(receiver_ID);
+                const receiverSocketID = getReceiverSocketID.toString(receiver_ID);
 
                 if (receiverSocketID) {
                     io.to(receiverSocketID).emit("newMessage", findSentMessage)
                 };
 
-                res.status(201).json(findSentMessage);
                 console.log(findSentMessage);
+
+                res.status(201).json(findSentMessage);
             })
         });
 
