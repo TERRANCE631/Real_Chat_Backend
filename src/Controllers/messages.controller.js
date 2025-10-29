@@ -25,7 +25,7 @@ export const getMessages = (req, res) => {
     try {
         const sender_ID = req.user;
         const { id: receiver_ID } = req.params;
-
+        
         db.query(messageQuery__createTable);
         db.query(getBothUsersMessages(sender_ID, receiver_ID), (err, messages) => {
             if (err) return res.status(404).json("Error occured in 👉getMessages controller Queries" + " | " + err);
@@ -57,20 +57,23 @@ export const sendMessages = (req, res) => {
 
         db.query(messageQuery__createTable);
         db.query(messageQuery__sendMessage, [values], (err, sendMessage) => {
-            if (err) return res.status(500).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
+            if (err) return res.status(400).json("Error occured in 👉sendMessage controller Queries" + " | " + err);
 
             db.query(messageQuery__getAllMessages, (err, message) => {
-                if (err) return res.status(500).json("Error occured in 👉sendMessage controller on SentMessage Query" + " | " + err);
+                if (err) return res.status(400).json("Error occured in 👉sendMessage controller on SentMessage Query" + " | " + err);
 
                 const findSentMessage = message.find((text) => text.id === sendMessage.insertId)
-                const receiverSocketID = getReceiverSocketID.toString(receiver_ID);
+                const receiverSocketID = getReceiverSocketID(receiver_ID);
 
                 if (receiverSocketID) {
                     io.to(receiverSocketID).emit("newMessage", findSentMessage)
                 };
 
                 console.log(findSentMessage);
-
+                console.log(sendMessage.insertId);
+                console.log(values);
+                console.log(message);
+                
                 res.status(201).json(findSentMessage);
             })
         });
