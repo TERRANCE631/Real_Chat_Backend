@@ -14,6 +14,10 @@ get http://localhost:5001/auth/checkauth
 content-type: application/json
 
 ###
+get http://localhost:5001/messages/users
+content-type: application/json
+
+###
 post http://localhost:5001/auth/loggin
 content-type: application/json
 
