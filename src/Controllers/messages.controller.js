@@ -25,8 +25,7 @@ export const getMessages = (req, res) => {
     try {
         const sender_ID = req.user;
         const { id: receiver_ID } = req.params;
-        
-        db.query(messageQuery__createTable);
+
         db.query(getBothUsersMessages(sender_ID, receiver_ID), (err, messages) => {
             if (err) return res.status(404).json("Error occured in 👉getMessages controller Queries" + " | " + err);
 
