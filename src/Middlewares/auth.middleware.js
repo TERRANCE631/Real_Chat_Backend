@@ -3,13 +3,14 @@ import jwt from "jsonwebtoken";
 export const protectRoute = (req, res, next) => {
     try {
         const token = req.cookies.token;
-        // console.log("Token from cookies:", token);
+        console.log("Token from cookies:", token);
 
         if (!token) {
             return res.status(401).json("Unauthorized - No token found");
         }
 
         const decoded = jwt.verify(token, process.env.HIDDEN_VALUE);
+        console.log("Decoded token:", decoded);
 
         if (!decoded || !decoded.userID) {
             return res.status(401).json("Unauthorized - Invalid token");
