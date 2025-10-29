@@ -9,7 +9,7 @@ export const GenerateToken = (userID, res) => {
     // Sign token
     const token = jwt.sign({ userID }, secret, { expiresIn: "7d" });
 
-    // production cookie
+    // production cookie if needed in future like cross site
     // res.cookie("token", token, {
     //     httpOnly: true,
     //     sameSite: "none", // must be none on production 
@@ -18,10 +18,17 @@ export const GenerateToken = (userID, res) => {
     // });
 
     // development cookie
+    // res.cookie("token", token, {
+    //     httpOnly: true,
+    //     sameSite: "lax", // must be none on localhost
+    //     secure: false, // must be false on localhost
+    //     maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
+
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax", // must be none on localhost
-        secure: false, // must be false on localhost
+        sameSite: "strict",
+        secure: process.env.NODE_ENV !== "development",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
